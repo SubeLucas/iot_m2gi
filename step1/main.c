@@ -40,6 +40,7 @@ void _start(void) {
   check_stacks();
   uarts_init();
   uart_enable(UART0);
+  uart_send(UART0, 48);
   for (;;) {
     uart_receive(UART0, &c);
     uart_send(UART0, c);

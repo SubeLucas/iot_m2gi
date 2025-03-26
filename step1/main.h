@@ -28,7 +28,7 @@ void kprintf(const char *fmt, ...);
 // __attribute__((always_inline)) : ignore les limites de 'inlining', ne produit pas de définition externe au linkage
 __inline__
 __attribute__((always_inline))
-uint32_t mmio_read8(void* bar, uint8_t offset) {
+uint8_t mmio_read8(void* bar, uint8_t offset) {
   return *((uint8_t*)(bar+offset));
 }
 

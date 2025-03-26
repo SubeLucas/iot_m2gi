@@ -55,8 +55,12 @@ void uart_disable(uint32_t uartno) {
 
 void uart_receive(uint8_t uartno, char *pt) {
   struct uart*uart = &uarts[uartno];
-  // TODO: not implemented yet...
-  panic();
+  while ((mmio_read16(uart->bar,UART_FR) & UART_RXFE)){
+    ;
+  }
+  //*pt = *(volatile char *)(uart->bar + UART_DR);
+  *pt = (char)mmio_read8(uart->bar, UART_DR);
+
 }
 
 /**
@@ -64,9 +68,14 @@ void uart_receive(uint8_t uartno, char *pt) {
  * until the character has been sent.
  */
 void uart_send(uint8_t uartno, char s) {
-  struct uart* uart = &uarts[uartno];
-  // TODO: not implemented yet...
-  panic();
+  // test si file pleine
+  struct uart*uart = &uarts[uartno];
+  while ((mmio_read16(uart->bar,UART_FR) & UART_RXFE)){
+    ;
+  }
+  //*pt = *(volatile char *)(uart->bar + UART_DR);
+  mmio_write8(uart->bar, UART_DR, s);
+
 }
 
 /**
@@ -74,6 +83,7 @@ void uart_send(uint8_t uartno, char s) {
  * it sends a C string through the given uart.
  */
 void uart_send_string(uint8_t uartno, const char *s) {
+  // Check status de l'UART avant ?
   while (*s != '\0') {
     uart_send(uartno, *s);
     s++;

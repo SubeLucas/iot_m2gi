@@ -26,15 +26,36 @@
  * We need the base address for the different serial lines.
  */
 
-#define UART0_BASE_ADDRESS ((void*)0x0000000) // ???
-#define UART1_BASE_ADDRESS ((void*)0x0000000) // ???
-#define UART2_BASE_ADDRESS ((void*)0x0000000) // ???
+#define UART0_BASE_ADDRESS ((void*)0x101F1000) // doc page 74
+#define UART1_BASE_ADDRESS ((void*)0x101F2000) // 
+#define UART2_BASE_ADDRESS ((void*)0x101F3000) // 
 
 /*
- * Is the UART chipset a PL011?
+ * Is the UART chipset a PL011? -> Oui
  * If so, we need the details for the data and status registers.
  */
-#define UART_DR 0x00 // ???
-#define UART_FR 0x00 // ???
 
+#define UART_DR 0x000 // Offset
+#define UART_FR 0x018 // Offset	 
+//				0b10010
+
+#define UART_RXFE (1<<4) // Receive FIFO empty.
+#define UART_TXFF (1<<6) // Transmit FIFO full
+
+
+/*
+
+
+
+UARTIMSC 0x038 Mask set clear interruption
+
+UARTRIS 0x03C les interruption que le device voudrait lever
+
+UARTMIS 0x040 Mask autorisation + demandes 
+
+UARTICR 0x044 Clear l'interruption levé
+
+*/
 #endif /* UART_MMIO_H_ */
+
+
