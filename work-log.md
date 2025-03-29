@@ -53,7 +53,7 @@ Si crash et que mémoire bloqué entre 0x04 et 0x10 -> accès mémoire illegal
 Créer une autre stack dans le linker pour le mode interruption
 Autoriser les UARTs d'autoriser les interruptions
     UARTIMSC 0x038 Mask set clear interruption 
-        -> voir le bitfield dans la doc
+        -> voir le bitfield dans la doc (page 64)
             bits 4-5
     UARTRIS 0x03C les interruption que le device voudrait lever
     
@@ -92,11 +92,6 @@ Memory map carte (DUI0225D_versatile_application_baseboard_arm926ej_s_ug-1.pdf) 
 
 
 
-todo :
-    interruption dans le receive
-    vérifier l'encodage reçu du clavier (en particulier é et les flèches)
-
-
 
 uart_receive : 
     read de la zone mémoire + check flag "RXFE"
@@ -104,3 +99,22 @@ uart_receive :
 
 
 
+
+
+
+## Step 2
+
+
+todo :
+    interruption dans le receive
+    vérifier l'encodage reçu du clavier (en particulier é et les flèches)
+
+- Ajout d'une stack "irq_stack_top" pour le mode interruption dans kernel.ld
+
+- Definition des macros relatives aux interruptions UART dans uart.h
+
+- Implémentation de uart_enable / uart_disable en activant le bit de de reception d'interruption
+
+- Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence
+    + TODO : call ça dans le kernel.ld ?
+    + check VICIRQSTATUS (offset 0x000) si les interruptions sont bien activées

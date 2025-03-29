@@ -45,12 +45,17 @@ void uart_enable(uint32_t uartno) {
   struct uart*uart = &uarts[uartno];
   // nothing to do here, as long as
   // we do not rely on interrupts
+  uint16_t current_value = mmio_read16(uart->bar, UARTIMSC);
+  mmio_write16(uart->bar, UARTIMSC, current_value | RXIM);
+  // activer TXIM aussi ?
 }
 
 void uart_disable(uint32_t uartno) {
   struct uart*uart = &uarts[uartno];
   // nothing to do here, as long as
   // we do not rely on interrupts
+  uint16_t current_value = mmio_read16(uart->bar, UARTIMSC);
+  mmio_write16(uart->bar, UARTIMSC, current_value & ~RXIM); // ~ : opérateur not
 }
 
 void uart_receive(uint8_t uartno, char *pt) {
@@ -58,7 +63,6 @@ void uart_receive(uint8_t uartno, char *pt) {
   while ((mmio_read16(uart->bar,UART_FR) & UART_RXFE)){
     ;
   }
-  //*pt = *(volatile char *)(uart->bar + UART_DR);
   *pt = (char)mmio_read8(uart->bar, UART_DR);
 
 }
