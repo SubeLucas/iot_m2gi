@@ -39,6 +39,11 @@ void _start(void) {
   char c;
   check_stacks();
   uarts_init();
+  core_enable_irqs();   // Interruption cpu
+  
+  //vic_setup_irqs();
+  //void vic_enable_irq(uint32_t irq,void(*callback)(uint32_t,void*),void*cookie);
+  
   uart_enable(UART0);
   uart_send(UART0, 48);
   for (;;) {

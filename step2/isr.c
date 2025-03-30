@@ -62,8 +62,7 @@ void core_halt() {
  * sides.
  */
 void vic_setup_irqs() {
-  // TODO
-  panic();
+  _irqs_setup();
 }
 
 /*

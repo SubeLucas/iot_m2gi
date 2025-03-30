@@ -109,12 +109,25 @@ todo :
     interruption dans le receive
     vérifier l'encodage reçu du clavier (en particulier é et les flèches)
 
+-----
+
+
 - Ajout d'une stack "irq_stack_top" pour le mode interruption dans kernel.ld
 
 - Definition des macros relatives aux interruptions UART dans uart.h
 
 - Implémentation de uart_enable / uart_disable en activant le bit de de reception d'interruption
 
+- Activation des interruption CPU dans main.c:_start
+
+- definition des macros isr.h (timer: doc page 201 *Versatile Application Baseboard*)
+
+
+// Toujours pas de test jusque là, je ne vois pas comment faire a part tout implémenté puis debugger
+
 - Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence
     + TODO : call ça dans le kernel.ld ?
     + check VICIRQSTATUS (offset 0x000) si les interruptions sont bien activées
+    
+
+- 
