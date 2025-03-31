@@ -30,6 +30,14 @@ void check_stacks() {
 */
 }
 
+void uart_receive_handler() {
+  uint8_t status = VICIRQSTATUS
+  if (status & 0x01)
+  uart_receive(UART0, &c);
+  else
+  //led_off(LED_MMIO_BAR);
+}
+
 /**
  * This is the C entry point,
  * upcalled once the hardware has been setup properly
@@ -43,14 +51,16 @@ void _start(void) {
   
   //vic_setup_irqs();
   //void vic_enable_irq(uint32_t irq,void(*callback)(uint32_t,void*),void*cookie);
-  
+  core_enable_irqs()
   uart_enable(UART0);
+
   uart_send(UART0, 48);
   for (;;) {
-    uart_receive(UART0, &c);
-    uart_send(UART0, c);
+    halt();
   }
 }
+
+
 
 void panic() {
   for(;;)

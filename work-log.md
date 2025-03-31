@@ -82,7 +82,7 @@ Dans un autre
 
 
 
-### docs
+## Step 1
 
 Memory map register UART ( DDI0183G-UART_PL011_r1p5_TRM.pdf ) : page 49
     UARTDR : page 52, ne prend qu'un octet sur les bits de poid faible en payload
@@ -91,26 +91,22 @@ Memory map carte (DUI0225D_versatile_application_baseboard_arm926ej_s_ug-1.pdf) 
     UART0 00x101F0000
 
 
-
-
 uart_receive : 
     read de la zone mémoire + check flag "RXFE"
     polling tant que la file est vide
 
 
 
-
-
-
 ## Step 2
 
 
-todo :
+todo général :
     interruption dans le receive
     vérifier l'encodage reçu du clavier (en particulier é et les flèches)
 
 -----
 
+Listes des étapes faites(dans l'ordre de réalisation)
 
 - Ajout d'une stack "irq_stack_top" pour le mode interruption dans kernel.ld
 
@@ -125,9 +121,14 @@ todo :
 
 // Toujours pas de test jusque là, je ne vois pas comment faire a part tout implémenté puis debugger
 
-- Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence
-    + TODO : call ça dans le kernel.ld ?
+- Squelette handler receive main.c
+
+- todo : lire en détail le irq.s
+    Rien compris au _wfi : c'est quoi une barriere mémoire ? Pourquoi on fait ça ?
+
+- todo : Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence
+    + TODO : call ça dans le kernel.ld ? ou irq.s ?
     + check VICIRQSTATUS (offset 0x000) si les interruptions sont bien activées
+        * Peut-être faire ça comme check_stack dans main.c ?
     
 
-- 
