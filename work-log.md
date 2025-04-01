@@ -46,7 +46,7 @@ Interrupt Service Routine (ISR) : sauvegarde contexte, registre 0 à 12,lr puis 
 
 
 
-Interruption set PC à 0x18 -> faire branchement vers handler ici
+Interruption set PC à 0x18 -> faire branchement vers handler ici pour atteindre 0x20 (_reset) car eu le temps de fetch 2 instructions
 
 Si crash et que mémoire bloqué entre 0x04 et 0x10 -> accès mémoire illegal
 
@@ -70,6 +70,23 @@ Activer le VIC
 Autoriser les interrution dans le CPU
     ->Code assembleur
 
+
+# Cours 3
+
+Ne jamais faire de truc long ou blocant, ni de mutex dans les handlers.
+    -> Risque de perdre des données
+
+Buffer circulaire(implémentation dépend du processeur) pour être thread-safe entre le handler et le code
+    -> plus besoin de désactiver les interruptions en zone critique
+
+
+Cas interruption juste avant un halt -> solution flush / faire le test + halt atomiquement (voir slide 13)
+
+Slide 13 : activer les interruption dans le for, c'est mieux sinon doit vider la liste sans interruption à chaque fois.
+
+Si ring pleins -> pas être en bizantin, tout stoper (rediriger en panic)
+
+Vider la fifo jusqu'a en dessous du seuil, sinon pas d'interruption
 
 -----
 
@@ -103,6 +120,7 @@ uart_receive :
 todo général :
     interruption dans le receive
     vérifier l'encodage reçu du clavier (en particulier é et les flèches)
+        Flèches -> 3 octets donc 3 interruptions
 
 -----
 
@@ -122,13 +140,51 @@ Listes des étapes faites(dans l'ordre de réalisation)
 // Toujours pas de test jusque là, je ne vois pas comment faire a part tout implémenté puis debugger
 
 - Squelette handler receive main.c
+    -> todo : rajouter (void* cookie) dans la signature
+    -> pointeur de handler
 
-- todo : lire en détail le irq.s
-    Rien compris au _wfi : c'est quoi une barriere mémoire ? Pourquoi on fait ça ?
-
-- todo : Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence
+- todo : Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence -> mettre selon l'autre documentation de la board avec le 1040 car après dans la chaine de la documentation.
     + TODO : call ça dans le kernel.ld ? ou irq.s ?
     + check VICIRQSTATUS (offset 0x000) si les interruptions sont bien activées
         * Peut-être faire ça comme check_stack dans main.c ?
-    
+    + 
+        
+- todo : une fois jump à _isr 
+    + Savoir quelle identifier quelle interruption
+    + Que faire avec le matériel qui a interrompu
+    + Que faire au logiciel qui s'est interrompu
 
+debug gdb : layout next
+
+
+
+
+## Step 3
+
+interruption tx quand il reste suffisament d'espace dans la file
+    Remplir le ring au delà du seuil à chaque interruption
+
+
+Mettre des listener sur la lecture / écriture
+
+
+
+// brouillon //
+
+uartinit(no,rl,wl,cookie){
+    handler fifo rx appel rl
+    handler fifo tx appel wl
+}
+
+uint8_t bit;
+while (uart_read(no,&bit)){
+    uart_write(no,&bit);
+}
+
+-> voir cour 3 slide 22
+Read :
+Pas de notification tant que return pas false, responsabilité de l'app
+
+Write :
+Pas défaut disponible, jusqu'a pleins.
+Une fois pleins, notifie une fois re-disponible
