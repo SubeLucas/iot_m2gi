@@ -136,14 +136,18 @@ Listes des étapes faites(dans l'ordre de réalisation)
 
 - definition des macros isr.h (timer: doc page 201 *Versatile Application Baseboard*)
 
+- Implémentation de vic_enable_irq
+
+
 
 // Toujours pas de test jusque là, je ne vois pas comment faire a part tout implémenté puis debugger
+    -> Possible de test le UART avant l'implem du VIC
 
 - Squelette handler receive main.c
     -> todo : rajouter (void* cookie) dans la signature
     -> pointeur de handler
 
-- todo : Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence -> mettre selon l'autre documentation de la board avec le 1040 car après dans la chaine de la documentation.
+- Initialiser le vic à 0xFFFFF000 (4ko) afin d'optimiser la latence -> mettre selon l'autre documentation de la board avec le 1040 car après dans la chaine de la documentation.
     + TODO : call ça dans le kernel.ld ? ou irq.s ?
     + check VICIRQSTATUS (offset 0x000) si les interruptions sont bien activées
         * Peut-être faire ça comme check_stack dans main.c ?

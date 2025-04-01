@@ -40,8 +40,11 @@ struct handler handlers[NIRQS];
  * status and call the corresponding handlers.
  */
 void isr() {
-  // TODO
-  panic();
+  // le branch 0x18
+  uint32_t status = mmio_read32(VIC_BASE_ADDR+VICRAWSTATUS);
+
+  // check qui demande interruption puis appeler le handler correspondant
+  // TODO : finir
 }
 
 void core_enable_irqs() {
@@ -63,20 +66,27 @@ void core_halt() {
  */
 void vic_setup_irqs() {
   _irqs_setup();
+  // setup les handlers ici ?
 }
 
 /*
  * Enables the given interrupt at the VIC level.
  */
 void vic_enable_irq(uint32_t irq, void (*callback)(uint32_t, void*), void *cookie) {
-  // TODO
-  panic();
+  mmio_write32(VIC_BASE_ADDR,VICINTENABLE,(VIC_BASE_ADDR+VICINTENABLE | (1<<(11+irq))));
+  handlers[irq]->callback = callback;
+  handlers[irq]->cookie = cookie;
+  
 }
 
 /*
  * Disables the given interrupt at the VIC level.
  */
 void vic_disable_irq(uint32_t irq) {
-  // TODO
-  panic();
+  mmio_write32(VIC_BASE_ADDR,VICINTENABLE,
+        (VIC_BASE_ADDR+VICINTENABLE ^ (VIC_BASE_ADDR+VICINTENABLE | (0<<(11+irq) ) )));
+  // TODO : mettre un 0 à ce bit là avec un mask bien
+
+  handlers[irq]->callback = NULL;
+  handlers[irq]->cookie = NULL;
 }

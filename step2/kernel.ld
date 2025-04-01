@@ -21,7 +21,9 @@ SECTIONS
   .text : { 
      build/exception.o(.text) 
      build/startup.o(.text)
+     build/irq.o(.text)
   }
+
   . = 0x100;
   .text : { 
      build/*(.text) 

@@ -13,6 +13,8 @@
  */
 #include "main.h"
 #include "uart.h"
+#include "isr-mmio.h"
+#include "isr.h"
 
 extern uint32_t irq_stack_top;
 extern uint32_t stack_top;
@@ -30,12 +32,13 @@ void check_stacks() {
 */
 }
 
-void uart_receive_handler() {
-  uint8_t status = VICIRQSTATUS
-  if (status & 0x01)
+
+// parametre handler ? utiliser cookie ?
+void uart_receive_handler(void* cookie) {
+  uint8_t status = VICIRQSTATUS;
+  char c;
   uart_receive(UART0, &c);
-  else
-  //led_off(LED_MMIO_BAR);
+  uart_send(UART0,c);
 }
 
 /**
@@ -48,15 +51,16 @@ void _start(void) {
   check_stacks();
   uarts_init();
   core_enable_irqs();   // Interruption cpu
-  
-  //vic_setup_irqs();
-  //void vic_enable_irq(uint32_t irq,void(*callback)(uint32_t,void*),void*cookie);
-  core_enable_irqs()
   uart_enable(UART0);
+  
+  vic_setup_irqs();
+  //void vic_enable_irq(uint32_t irq,void(*callback)(uint32_t,void*),void*cookie);
+  // peut-être viré l'uint32_t
+  vic_enable_irq(irq,&uart_receive_handler)
 
   uart_send(UART0, 48);
   for (;;) {
-    halt();
+    core_halt();
   }
 }
 
