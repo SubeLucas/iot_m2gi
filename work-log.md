@@ -153,6 +153,9 @@ Listes des étapes faites(dans l'ordre de réalisation)
         * Peut-être faire ça comme check_stack dans main.c ?
     + 
         
+- branch link ``_isr_handler`` avec sauvegarde et restauration de contexte.
+    + Juste les 12 premiers + LR pour revenir, registres 13,14 sont "banké"
+
 - todo : une fois jump à _isr 
     + Savoir quelle identifier quelle interruption
     + Que faire avec le matériel qui a interrompu
