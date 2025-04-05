@@ -28,6 +28,8 @@
 	Interrupt memory location
 */
 
+/*
+Déplacé da,s uart-mmio.h puis renommé avec des '_'
 #define UARTIMSC 0x038	// Interrupt Mask Set/Clear Register offset
 #define UARTRIS 0x03C	// Raw Interrupt Status Register offset
 #define UARTMIS 0x040	// Masked Interrupt Status Register offset
@@ -36,7 +38,7 @@
 // UARTIMSC bitfield
 #define RXIM (1<<4)		// Receive interrupt mask
 #define TXIM (1<<5)		// Transmit interrupt mask
-
+*/
 /*
  * Receives a one-byte character, which is compatible
  * with ASCII encoding. This function blocks, spinning,

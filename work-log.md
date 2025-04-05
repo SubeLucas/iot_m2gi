@@ -18,6 +18,7 @@ Linker Script : met les blocs du code (code, data, BSS, stack) dans la mémoire
 
 MMIO Register : zone mémoire pour la communication avec les périphériques
     -> faire des fonctions pour lire écrire sur 8,12,32 dessus
+        ->Déjà fourni dans main.h
 
 
 
@@ -69,6 +70,10 @@ Activer le VIC
 
 Autoriser les interrution dans le CPU
     ->Code assembleur
+
+
+
+
 
 
 # Cours 3
@@ -155,14 +160,36 @@ Listes des étapes faites(dans l'ordre de réalisation)
         
 - branch link ``_isr_handler`` avec sauvegarde et restauration de contexte.
     + Juste les 12 premiers + LR pour revenir, registres 13,14 sont "banké"
+        -> Erreur vu plus tard, ce que je pensait être à cet endroit était dans ``irq.s:_irqs_setup``
 
-- todo : une fois jump à _isr 
+- Une fois jump à _isr 
     + Savoir quelle identifier quelle interruption
     + Que faire avec le matériel qui a interrompu
     + Que faire au logiciel qui s'est interrompu
 
 debug gdb : layout next
 
+
+
+vic_enable_irq et vic_disable_irq, ajout de +11 dans le décalage du masque pour tomber sur les bon bits.
+    -> erreur pas besoin de rajouté 11, les macros prenne déjà UARTX_IRQ prennent déjà cela en compte
+
+
+// Historique de debug / reflexion
+
+// A ce stade, mon "0" (uart_send(UART0, 48);) s'affiche après une entrée clavier, début de la phase de debug 
+
+// Cela était du au fait que la fifo de UART0 n'était pas flush tant que je n'avais pas envoyé un signal
+
+// Ensuite le programme rentre dans la boucle d'attente infini et ne se reveil pas.
+
+// un collègue m'a expliqué que ce que j'avais mis dans  exeception.s allait en fait irq.s
+
+// setup_irq fait maintenant sauté le pc à _start, peut-être que l'ajustement de LR n'est pas bon
+
+// Utilisation des masques correctement (avec la fonction au lieu de faire une tentative à la main) dans uart_enable/disable 
+
+// Plus de boucle infinie mais le handler n'est toujours pas appelé, vérification dans gdb
 
 
 

@@ -45,6 +45,7 @@ _wfi:
  */
 .global _irqs_setup
 	.func _irqs_setup
+    
 _irqs_setup:
     /* get Program Status Register */
     mrs r0, cpsr
@@ -54,6 +55,18 @@ _irqs_setup:
     msr cpsr, r1
     /* set IRQ stack */
     ldr sp, =irq_stack_top
+
+    sub lr,lr,#4      // On ajuste le pc pour revenir sur la bonne instruction
+    stmfd sp!, {r0-r12, lr} /// Sauvegarde du contexte (todo vérifier si pas + de registre)
+
+    bl isr    // Appel de la fonction isr de isr.c (Si tout va bien)
+    // utiliser un bl et pas un b pour revenir après le return
+
+    ldmfd sp!, {r0-r12, pc}^    // Restauration du contexte
+
+
+
+
     /* go back to the mode the processor was in
      * when this function was called, normally,
      * it should be the Supervisor mode */

@@ -46,15 +46,9 @@ unused_handler_addr: .word _unused_handler
 irq_handler_addr: .word _isr_handler
 fiq_handler_addr: .word _fiq_handler
 
-_isr_handler:
-   sub lr,lr,#4      // On ajuste le pc pour revenir sur la bonne instruction
-   stmfd sp!, {r0-r12, lr} /// Sauvegarde du contexte (todo vérifier si pas + de registre)
 
-   //b .  // unexpected interrupt occurred
-   bl isr    // Appel de la fonction isr de isr.c (Si tout va bien)
-   // utiliser un bl et pas un b pour revenir après le return
-   
-   ldmfd sp!, {r0-r12, pc}^    // Restauration du contexte
+_isr_handler:
+    b _irqs_setup
 
 _unused_handler:
     b .  // unused interrupt occurred

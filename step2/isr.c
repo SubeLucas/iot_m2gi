@@ -40,11 +40,16 @@ struct handler handlers[NIRQS];
  * status and call the corresponding handlers.
  */
 void isr() {
-  // le branch 0x18
-  uint32_t status = mmio_read32(VIC_BASE_ADDR+VICRAWSTATUS);
+  core_disable_irqs();
+  uint32_t irqs = mmio_read32((void *)VIC_BASE_ADDR, VICIRQSTATUS);
+  for (uint32_t i = 0; i < NIRQS; i++) {
 
-  // check qui demande interruption puis appeler le handler correspondant
-  // TODO : finir
+    // Vérifie si un flag d'interruption est levé
+    if (irqs & (1 << i)){
+      handlers[i].callback(i, handlers[i].cookie);
+    }
+  }
+  core_enable_irqs();
 }
 
 void core_enable_irqs() {
@@ -65,7 +70,7 @@ void core_halt() {
  * sides.
  */
 void vic_setup_irqs() {
-  _irqs_setup();
+  //_irqs_setup();
   // setup les handlers ici ?
 }
 
@@ -73,9 +78,10 @@ void vic_setup_irqs() {
  * Enables the given interrupt at the VIC level.
  */
 void vic_enable_irq(uint32_t irq, void (*callback)(uint32_t, void*), void *cookie) {
-  mmio_write32(VIC_BASE_ADDR,VICINTENABLE,(VIC_BASE_ADDR+VICINTENABLE | (1<<(11+irq))));
-  handlers[irq]->callback = callback;
-  handlers[irq]->cookie = cookie;
+  //mmio_write32((void*)VIC_BASE_ADDR,VICINTENABLE,(VIC_BASE_ADDR+VICINTENABLE | (1<<(11+irq))));
+  mmio_set((void*)VIC_BASE_ADDR,VICINTENABLE,irq);
+  handlers[irq].callback = callback;
+  handlers[irq].cookie = cookie;
   
 }
 
@@ -83,10 +89,8 @@ void vic_enable_irq(uint32_t irq, void (*callback)(uint32_t, void*), void *cooki
  * Disables the given interrupt at the VIC level.
  */
 void vic_disable_irq(uint32_t irq) {
-  mmio_write32(VIC_BASE_ADDR,VICINTENABLE,
-        (VIC_BASE_ADDR+VICINTENABLE ^ (VIC_BASE_ADDR+VICINTENABLE | (0<<(11+irq) ) )));
-  // TODO : mettre un 0 à ce bit là avec un mask bien
+  mmio_clear((void*)VIC_BASE_ADDR,VICINTENABLE,irq);
 
-  handlers[irq]->callback = NULL;
-  handlers[irq]->cookie = NULL;
+  handlers[irq].callback = NULL;
+  handlers[irq].cookie = NULL;
 }

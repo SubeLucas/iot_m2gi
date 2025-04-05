@@ -34,9 +34,13 @@ void check_stacks() {
 
 
 // parametre handler ? utiliser cookie ?
-void uart_receive_handler(void* cookie) {
+void uart_receive_handler(uint32_t irq, void* cookie) {
+  uart_send(UART0, 48);
+
   uint8_t status = VICIRQSTATUS;
   char c;
+
+  // faire un switch selon l'irq envoyer des sur UART different ?
   uart_receive(UART0, &c);
   uart_send(UART0,c);
 }
@@ -54,11 +58,15 @@ void _start(void) {
   uart_enable(UART0);
   
   vic_setup_irqs();
-  //void vic_enable_irq(uint32_t irq,void(*callback)(uint32_t,void*),void*cookie);
-  // peut-être viré l'uint32_t
-  vic_enable_irq(irq,&uart_receive_handler)
+  // peut-être viré l'uint32_t ?
+  // Pas de cookie pour l'instant
+  vic_enable_irq(UART0_IRQ,&uart_receive_handler,NULL); 
 
   uart_send(UART0, 48);
+  uart_send(UART0, 49);
+  uart_send(UART0, 50);
+  uart_send(UART0, 51);
+
   for (;;) {
     core_halt();
   }

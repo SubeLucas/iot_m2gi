@@ -40,7 +40,28 @@
 //				0b10010
 
 #define UART_RXFE (1<<4) // Receive FIFO empty.
-#define UART_TXFF (1<<6) // Transmit FIFO full
+#define UART_TXFF (1<<5) // Transmit FIFO full
+
+
+#define UART_IMSC 0x038	// Interrupt Mask Set/Clear Register offset
+#define UART_RIS 0x03C	// Raw Interrupt Status Register offset
+#define UART_MIS 0x040	// Masked Interrupt Status Register offset
+#define UART_IFLS 0x034	// Interrupt FIFO Level Select Register offset
+
+// UARTIMSC bitfield
+#define RXIM (1<<4)		// Receive interrupt mask
+#define TXIM (1<<5)		// Transmit interrupt mask
+
+
+
+
+#define UART_RIS    0x03C // Raw Interrupt Status Register offset
+#define UART_MIS    0x040 // masked interrupt status register, UART_IMSC & UART_RIS
+#define UART_ICR    0x044 // interrupt clear register, clear UART_RIS bits 
+
+// UARTIMSC bitfield
+#define UART_RXIM (1<<4)		// Receive interrupt mask
+#define UART_TXIM (1<<5)		// Transmit interrupt mask
 
 
 /*
