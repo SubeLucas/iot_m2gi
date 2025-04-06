@@ -191,6 +191,25 @@ vic_enable_irq et vic_disable_irq, ajout de +11 dans le décalage du masque pour
 
 // Plus de boucle infinie mais le handler n'est toujours pas appelé, vérification dans gdb
 
+// vérification si flag interruption receive uart activé
+    x /xw 0x101F1038
+    0x101f1038:  0x00000010
+
+// flags interruption vic et uart semble ok, 
+    ``info registers cpsr`` = 0x8000015f , 0x80 est le flag des interruption processeur désactivé, donc c'est probablement ça le problème
+
+// Changement d'avis, ``_isr_handler`` re-contient la sauvegarde du contexte et l'appel à isr()
+
+// Re-activation isr_handler()
+
+``info registers cpsr``
+cpsr           0x6000015f
+
+// Les interruptions processeurs semble active maintenant, du moins c'est plus 0x80 mais 0x60 donc je l'interprete comme ça.
+
+note pour check vic : ``x /xw 0x10140010``
+
+// tout les flag d'interruption sont ok mais, le handler n'est toujours pas appelé, pas de piste, je reprend plus tard
 
 
 ## Step 3

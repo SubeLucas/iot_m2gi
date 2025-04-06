@@ -48,7 +48,11 @@ fiq_handler_addr: .word _fiq_handler
 
 
 _isr_handler:
-    b _irqs_setup
+   sub lr, lr, #4
+   stmfd sp!, {r0-r12, lr}
+   bl isr
+   ldmfd sp!, {r0-r12, pc}^
+    //b _irqs_setup
 
 _unused_handler:
     b .  // unused interrupt occurred

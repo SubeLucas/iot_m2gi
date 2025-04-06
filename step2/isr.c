@@ -40,16 +40,16 @@ struct handler handlers[NIRQS];
  * status and call the corresponding handlers.
  */
 void isr() {
-  core_disable_irqs();
+  core_disable_irqs();  // zone critique
   uint32_t irqs = mmio_read32((void *)VIC_BASE_ADDR, VICIRQSTATUS);
   for (uint32_t i = 0; i < NIRQS; i++) {
 
-    // Vérifie si un flag d'interruption est levé
+    // Vérifie si un flag d'interruption est levé sur chaque irq
     if (irqs & (1 << i)){
       handlers[i].callback(i, handlers[i].cookie);
     }
   }
-  core_enable_irqs();
+  core_enable_irqs(); //fin zone critique
 }
 
 void core_enable_irqs() {
@@ -70,8 +70,10 @@ void core_halt() {
  * sides.
  */
 void vic_setup_irqs() {
-  //_irqs_setup();
-  // setup les handlers ici ?
+  _irqs_setup();
+
+  // utiliser un clear plutot ?
+  mmio_write32((void*)VIC_BASE_ADDR,VICINTSELECT,0);
 }
 
 /*

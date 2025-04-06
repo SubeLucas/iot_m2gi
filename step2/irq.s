@@ -56,13 +56,13 @@ _irqs_setup:
     /* set IRQ stack */
     ldr sp, =irq_stack_top
 
-    sub lr,lr,#4      // On ajuste le pc pour revenir sur la bonne instruction
-    stmfd sp!, {r0-r12, lr} /// Sauvegarde du contexte (todo vérifier si pas + de registre)
+    //sub lr,lr,#4      // On ajuste le pc pour revenir sur la bonne instruction
+    //stmfd sp!, {r0-r12, lr} /// Sauvegarde du contexte (todo vérifier si pas + de registre)
 
-    bl isr    // Appel de la fonction isr de isr.c (Si tout va bien)
+    //bl isr    // Appel de la fonction isr de isr.c (Si tout va bien)
     // utiliser un bl et pas un b pour revenir après le return
 
-    ldmfd sp!, {r0-r12, pc}^    // Restauration du contexte
+    //ldmfd sp!, {r0-r12, pc}^    // Restauration du contexte
 
 
 
