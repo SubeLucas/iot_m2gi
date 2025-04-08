@@ -49,6 +49,7 @@ void isr() {
       handlers[i].callback(i, handlers[i].cookie);
     }
   }
+  vic_ack(irqs);
   core_enable_irqs(); //fin zone critique
 }
 
@@ -73,15 +74,15 @@ void vic_setup_irqs() {
   _irqs_setup();
 
   // utiliser un clear plutot ?
-  mmio_write32((void*)VIC_BASE_ADDR,VICINTSELECT,0);
+  //mmio_write32((void*)VIC_BASE_ADDR,VICINTSELECT,0);
 }
 
 /*
  * Enables the given interrupt at the VIC level.
  */
 void vic_enable_irq(uint32_t irq, void (*callback)(uint32_t, void*), void *cookie) {
-  //mmio_write32((void*)VIC_BASE_ADDR,VICINTENABLE,(VIC_BASE_ADDR+VICINTENABLE | (1<<(11+irq))));
-  mmio_set((void*)VIC_BASE_ADDR,VICINTENABLE,irq);
+  //mmio_write32((void*)VIC_BASE_ADDR,VICINTENABLE,(VIC_BASE_ADDR+VICINTENABLE | (1<<(irq))));
+  mmio_set((void*)VIC_BASE_ADDR,VICINTENABLE,(1<<irq));
   handlers[irq].callback = callback;
   handlers[irq].cookie = cookie;
   
@@ -91,8 +92,15 @@ void vic_enable_irq(uint32_t irq, void (*callback)(uint32_t, void*), void *cooki
  * Disables the given interrupt at the VIC level.
  */
 void vic_disable_irq(uint32_t irq) {
-  mmio_clear((void*)VIC_BASE_ADDR,VICINTENABLE,irq);
+  // clear ?
+  mmio_clear((void*)VIC_BASE_ADDR,VICINTENABLE,(1<<irq));
 
   handlers[irq].callback = NULL;
   handlers[irq].cookie = NULL;
+}
+
+
+
+void vic_ack(uint32_t irq){
+  mmio_set((void*)VIC_BASE_ADDR,VICINTCLEAR,(1<<irq));
 }

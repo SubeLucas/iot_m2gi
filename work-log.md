@@ -93,6 +93,11 @@ Si ring pleins -> pas être en bizantin, tout stoper (rediriger en panic)
 
 Vider la fifo jusqu'a en dessous du seuil, sinon pas d'interruption
 
+
+# Cours 4
+
+
+
 -----
 
 ### lancer + debug :

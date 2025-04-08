@@ -48,16 +48,13 @@
 #define UART_MIS 0x040	// Masked Interrupt Status Register offset
 #define UART_IFLS 0x034	// Interrupt FIFO Level Select Register offset
 
+
+#define UART_ICR 0x044 // Clear l'interruption levé
+
 // UARTIMSC bitfield
 #define RXIM (1<<4)		// Receive interrupt mask
 #define TXIM (1<<5)		// Transmit interrupt mask
 
-
-
-
-#define UART_RIS    0x03C // Raw Interrupt Status Register offset
-#define UART_MIS    0x040 // masked interrupt status register, UART_IMSC & UART_RIS
-#define UART_ICR    0x044 // interrupt clear register, clear UART_RIS bits 
 
 // UARTIMSC bitfield
 #define UART_RXIM (1<<4)		// Receive interrupt mask

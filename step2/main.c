@@ -15,6 +15,7 @@
 #include "uart.h"
 #include "isr-mmio.h"
 #include "isr.h"
+#include "uart-mmio.h"
 
 extern uint32_t irq_stack_top;
 extern uint32_t stack_top;
@@ -34,13 +35,17 @@ void check_stacks() {
 
 
 void uart_receive_handler(uint32_t irq, void* cookie) {
-  uart_send(UART0, 48);
-  /*
+  //uart_send(UART0, 48);
+  
   char c;
 
   // faire un switch selon l'irq envoyer des sur UART different ?
   uart_receive(UART0, &c);
-  uart_send(UART0,c);*/
+  uart_send(UART0,c);
+
+  // ack l'interruption au UART
+  mmio_set(UART0_BASE_ADDRESS, UART_ICR, UART_RXIM);
+  mmio_set(UART0_BASE_ADDRESS, UART_ICR, UART_TXIM);
 }
 
 /**
@@ -60,10 +65,7 @@ void _start(void) {
   vic_enable_irq(UART0_IRQ,&uart_receive_handler,NULL); 
 
   core_enable_irqs();   // Interruption cpu
-  uart_send(UART0, 48);
-  uart_send(UART0, 49);
-  uart_send(UART0, 50);
-  uart_send(UART0, 51);
+  
 
   for (;;) {
     core_halt();

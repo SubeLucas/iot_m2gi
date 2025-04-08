@@ -48,6 +48,7 @@ void uart_enable(uint32_t uartno) {
   //uint16_t current_value = mmio_read16(uart->bar, UARTIMSC);
   //mmio_write16(uart->bar, UARTIMSC, current_value | RXIM);
   mmio_set(uart->bar, UART_IMSC, UART_RXIM);
+  mmio_set(uart->bar, UART_IMSC, UART_TXIM);
   // activer TXIM aussi ? -> non ou pas encore
 }
 
@@ -58,6 +59,7 @@ void uart_disable(uint32_t uartno) {
   //uint16_t current_value = mmio_read16(uart->bar, UARTIMSC);
   //mmio_write16(uart->bar, UARTIMSC, current_value & ~RXIM); // ~ : opérateur not
   mmio_clear(uart->bar, UART_IMSC, UART_RXIM);
+  mmio_clear(uart->bar, UART_IMSC, UART_TXIM);
 }
 
 void uart_receive(uint8_t uartno, char *pt) {
