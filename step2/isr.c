@@ -103,4 +103,5 @@ void vic_disable_irq(uint32_t irq) {
 
 void vic_ack(uint32_t irq){
   mmio_set((void*)VIC_BASE_ADDR,VICINTCLEAR,(1<<irq));
+  
 }

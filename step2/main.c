@@ -40,12 +40,21 @@ void uart_receive_handler(uint32_t irq, void* cookie) {
   char c;
 
   // faire un switch selon l'irq envoyer des sur UART different ?
+  //uart_receive(UART0, &c);
+  //uart_send(UART0,c);
+
   uart_receive(UART0, &c);
-  uart_send(UART0,c);
+  while (c) {
+    uart_send(UART0, c);
+    uart_receive(UART0, &c);
+  }
 
   // ack l'interruption au UART
   mmio_set(UART0_BASE_ADDRESS, UART_ICR, UART_RXIM);
   mmio_set(UART0_BASE_ADDRESS, UART_ICR, UART_TXIM);
+
+
+
 }
 
 /**

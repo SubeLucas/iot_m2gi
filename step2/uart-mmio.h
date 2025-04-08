@@ -41,6 +41,7 @@
 
 #define UART_RXFE (1<<4) // Receive FIFO empty.
 #define UART_TXFF (1<<5) // Transmit FIFO full
+#define UART_RXFF (1<<6) // Receive FIFO full
 
 
 #define UART_IMSC 0x038	// Interrupt Mask Set/Clear Register offset

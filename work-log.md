@@ -197,8 +197,12 @@ vic_enable_irq et vic_disable_irq, ajout de +11 dans le décalage du masque pour
 // Plus de boucle infinie mais le handler n'est toujours pas appelé, vérification dans gdb
 
 // vérification si flag interruption receive uart activé
+    UART_IMSC -> demande d'interruption
     x /xw 0x101F1038
     0x101f1038:  0x00000010
+
+    UART_RIS -> interruption levé par le systeme
+    x /xw 0x101F103c
 
 // flags interruption vic et uart semble ok, 
     ``info registers cpsr`` = 0x8000015f , 0x80 est le flag des interruption processeur désactivé, donc c'est probablement ça le problème
@@ -212,9 +216,18 @@ cpsr           0x6000015f
 
 // Les interruptions processeurs semble active maintenant, du moins c'est plus 0x80 mais 0x60 donc je l'interprete comme ça.
 
-note pour check vic : ``x /xw 0x10140010``
+note pour check vic VICINTENABLE: ``x /xw 0x10140010``
 
 // tout les flag d'interruption sont ok mais, le handler n'est toujours pas appelé, pas de piste, je reprend plus tard
+
+// Erreur écriture masque dans vic_enable, oublie du décalage du bit dans mmio_set
+
+// Ajout des ack uart et vic
+
+// Premier charactère ne s'affiche pas tout de suite -> bloqué dans uart-send
+    -> Nouvelle implementation uart_receive / uart_send 
+    -> Step2 fonctionne mais toujours le problème du premier char
+
 
 
 ## Step 3
